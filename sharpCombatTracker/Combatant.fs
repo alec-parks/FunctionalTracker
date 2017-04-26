@@ -12,22 +12,21 @@ let (|IsAlive|_|) health = if health > 0 then Some IsAlive else None
 let (|IsDead|_|) health = if health <= 0 then Some IsDead else None
 
 //Functions!
-let takeDamage state dam =
-    let {HP=currentHP} = state
+let takeDamage combatant dam =
+    let {HP=currentHP} = combatant
     let health = currentHP - dam
-    let newState = 
+    let newCombatant = 
         match health with
-        | IsAlive -> {state with HP = health}
-        | IsDead -> {state with HP = health; State=Status.Dead}
-        | _ -> state
-    newState
+        | IsAlive -> {combatant with HP = health}
+        | IsDead -> {combatant with HP = health; State=Status.Dead}
+    newCombatant
 
-let healDamage state heal =
-    let {HP=currentHP; MaxHP=maxHp} = state
+let healDamage combatant heal =
+    let {HP=currentHP; MaxHP=maxHp} = combatant
     let totalHealth = if currentHP + heal > maxHp then maxHp 
                       else currentHP + heal
-    let newState = {state with HP=totalHealth}
-    newState
+    let newCombatant = {combatant with HP=totalHealth}
+    newCombatant
 
 //Sample Player
 (*
