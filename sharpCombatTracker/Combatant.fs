@@ -8,8 +8,7 @@ type Combatant = {Name:Name; InitiativeMod:Modifier; HP:int; MaxHP:int;
                     Type:CombatantType; State:Status}
 
 //Active Patterns
-let (|IsAlive|_|) health = if health > 0 then Some IsAlive else None
-let (|IsDead|_|) health = if health <= 0 then Some IsDead else None
+let (|IsAlive|IsDead|) health = if health > 0 then IsAlive else IsDead
 
 //Functions!
 let takeDamage combatant dam =
