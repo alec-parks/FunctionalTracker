@@ -1,4 +1,6 @@
-﻿module DiceRoller =
+﻿namespace sharpCombatTracker
+
+module DiceRoller =
     let roller = System.Random()
     let rec roll sides dice = 
         match dice with
@@ -15,31 +17,32 @@ type Modifier = Modifier of int
 type Combatant = {Name:Name; InitiativeMod:Modifier; HP:int; MaxHP:int; 
                     Type:CombatantType; State:Status; Initiative : int option}
 
+module Combatant =
+    open System
 //Active Patterns
-let (|IsAlive|IsDead|) health = if health > 0 then IsAlive else IsDead
+    let (|IsAlive|IsDead|) health = if health > 0 then IsAlive else IsDead
 
-//Functions!
-let takeDamage combatant dam =
-    let {HP=currentHP} = combatant
-    let health = currentHP - dam
-    match health with
-      | IsAlive -> {combatant with HP = health}
-      | IsDead -> {combatant with HP = health; State=Status.Dead}
+    //Functions!
+    let takeDamage combatant dam =
+        let {HP=currentHP} = combatant
+        let health = currentHP - dam
+        match health with
+        | IsAlive -> {combatant with HP = health}
+        | IsDead -> {combatant with HP = health; State=Status.Dead}
 
-let healDamage combatant heal =
-    let {HP=currentHP; MaxHP=maxHp} = combatant
-    let totalHealth = if currentHP + heal > maxHp then maxHp 
-                      else currentHP + heal
-    {combatant with HP=totalHealth}
+    let healDamage combatant heal =
+        let {HP=currentHP; MaxHP=maxHp} = combatant
+        let totalHealth = Math.Min (currentHP + heal, maxHp)
+        {combatant with HP=totalHealth}
 
-let rollInit combatant =
-    let {InitiativeMod = Modifier(modifier)} = combatant
-    {combatant with Initiative=Some(DiceRoller.rollInitiative() + modifier)}
+    let rollInit combatant =
+        let {InitiativeMod = Modifier(modifier)} = combatant
+        {combatant with Initiative=Some(DiceRoller.rollInitiative() + modifier)}
 
 //Sample Player
 (*
     let chauncy = {Name = Name "Chauncy"; InitiativeMod = Modifier 5; HP = 3; MaxHP = 3;
-                   Type = CombatantType.Player; State = Status.Alive; Initiative = None}
+                Type = CombatantType.Player; State = Status.Alive; Initiative = None}
 *)
 
 //Simple initiative interactive test
