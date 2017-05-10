@@ -9,13 +9,13 @@ module DiceRoller =
     let rollInitiative () = roll 20 1
 
 type CombatantType = | Player = 1 | Monster = 2
-type Status = | Alive = 1 | Dead=2
+type Status = | Alive = 1 | Dead = 2
 type Name = Name of string
 type Modifier = Modifier of int
+type Initiative = {Modifier:Modifier ; Initiative:int option ; IsSet: bool}
 
 //Combatant record type
-type Combatant = {Name:Name; InitiativeMod:Modifier; HP:int; MaxHP:int; 
-                    Type:CombatantType; State:Status; Initiative : int option}
+type Combatant = {Name:Name; HP:int; MaxHP:int; Initiative:Initiative ; Type:CombatantType; State:Status}
 
 module Combatant =
     open System
@@ -36,13 +36,16 @@ module Combatant =
         {combatant with HP=totalHealth}
 
     let rollInit combatant =
-        let {InitiativeMod = Modifier(modifier)} = combatant
-        {combatant with Initiative=Some(DiceRoller.rollInitiative() + modifier)}
+        let {Modifier = Modifier(modifier)} = combatant.Initiative
+        let initiativeRoll = DiceRoller.rollInitiative() + modifier
+        let newInitiative =  {Modifier = Modifier(modifier); Initiative = Some(initiativeRoll); IsSet = true}
+        {combatant with Initiative = newInitiative}
 
 //Sample Player
 (*
-    let chauncy = {Name = Name "Chauncy"; InitiativeMod = Modifier 5; HP = 3; MaxHP = 3;
-                Type = CombatantType.Player; State = Status.Alive; Initiative = None}
+    let chauncy = {Name = Name "Chauncy"; HP = 3; MaxHP = 3; 
+                Initiative = {Modifier = Modifier(5); Initiative = None; IsSet=false};
+                Type = CombatantType.Player; State = Status.Alive}
 *)
 
 //Simple initiative interactive test
