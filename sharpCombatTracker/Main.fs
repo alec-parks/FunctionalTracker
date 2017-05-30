@@ -26,7 +26,7 @@ module FlowHelpers =
         let damagedCombatant = Combatant.takeDamage localCombatant amount
         damagedCombatant :: removeCombatant combatants combatant
 
-
+    ///Takes a world, performs an action, and returns the new state of the world.
     let flow world action  =
         let {combatants = lCombatants} = world
         match action with
@@ -36,6 +36,14 @@ module FlowHelpers =
         | HealCombatant   (combatant, healing) -> {world with combatants = (healCombatant lCombatants combatant healing)}
         | _                                    -> world 
 
+    let createCharacter name curHP maxHP modifier cType =
+        let parsedType = 
+            System.Enum.Parse(typeof<CombatantType>, cType) 
+            :?> CombatantType //Downcast needed for parsing. Returns object.
+        {Name = name; HP = curHP; MaxHP = maxHP;
+         Initiative = {Modifier = modifier; Initiative = None; IsSet = false};
+         Type = parsedType; State = Status.Alive}
+
 module Main = 
     
     open System
@@ -43,10 +51,10 @@ module Main =
     // open Gtk
 
     [<EntryPoint>]
-    let Main(args) = 
-        let testCombatant =  {Name = Name "Chauncy"; HP = 3; MaxHP = 3; 
-                                Initiative = {Modifier = Modifier(5); Initiative = None; IsSet=false};
-                                Type = CombatantType.Player; State = Status.Alive}
+    let Main(args) =
+
+        let testCombatant = createCharacter (Name("Chauncy")) (HP(3)) (HP(3)) (Modifier(5)) "Player"  
+        
         printfn "%A" testCombatant
         // Application.Init()
         // let win = new MainWindow.MyWindow()
