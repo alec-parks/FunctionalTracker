@@ -66,6 +66,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="MainWindow.fs" />
     <Compile Include="src\Combatant.fs" />
+    <Compile Include="src\FlowHelpers.fs" />
     <Compile Include="Main.fs" />
     <None Include="packages.config" />
   </ItemGroup>
