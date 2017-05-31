@@ -10,7 +10,6 @@ module FlowHelpers =
         | RemoveCombatant of Combatant
         | DamageCombatant of (Combatant * int)
         | HealCombatant of (Combatant * int)
-        | Quit
 
     let removeCombatant combatants (combatant:Combatant) = 
         List.filter (fun t -> t <> combatant) combatants
@@ -34,7 +33,6 @@ module FlowHelpers =
         | RemoveCombatant (combatant)          -> {world with combatants = (removeCombatant lCombatants combatant)}
         | DamageCombatant (combatant, damage)  -> {world with combatants = (damageCombatant lCombatants combatant damage)}
         | HealCombatant   (combatant, healing) -> {world with combatants = (healCombatant lCombatants combatant healing)}
-        | _                                    -> world 
 
     let createCombatant name curHP maxHP modifier cType =
         {Name = name; HP = curHP; MaxHP = maxHP;
